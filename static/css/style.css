@@ -1,0 +1,247 @@
+/* General Settings */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* NAVBAR - Professional Size & Colors */
+.navbar {
+  background-color: #1F3D2B !important; 
+  min-height: 60px; 
+  padding: 5px 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-brand {
+  color: #F5F7F6 !important;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo {
+  width: 32px;
+  height: auto;
+  margin-right: 10px;
+  background: white;
+  border-radius: 50%;
+}
+
+/* --- UPDATED: Navbar Links Professional Hover & Bold Effect --- */
+.navbar .nav-link {
+  color: #F5F7F6 !important;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  padding: 8px 15px !important;
+  position: relative; /* Underline positioning ke liye */
+}
+
+/* Animated Underline Effect */
+.navbar .nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background-color: #ffffff; /* White underline */
+  transition: all 0.3s ease-in-out;
+  transform: translateX(-50%);
+}
+
+/* Hover State: Bold + Underline Expansion */
+.navbar .nav-link:hover {
+  color: #ffffff !important; 
+  transform: scale(1.05);
+  font-weight: 700; /* Bold effect */
+}
+
+.navbar .nav-link:hover::after {
+  width: 70%; /* Hover par underline expand hogi */
+}
+
+/* Active Page Underline */
+.navbar .nav-link.active {
+  font-weight: 700;
+}
+.navbar .nav-link.active::after {
+  width: 70%;
+}
+
+/* --- AUTH BUTTONS (Login & Signup) --- */
+
+.btn-login {
+  color: #F5F7F6 !important;
+  border: 1.5px solid #F5F7F6 !important;
+  font-size: 13px;
+  padding: 4px 20px;
+  border-radius: 20px;
+  background: transparent;
+  transition: all 0.3s ease;
+  margin-right: 8px;
+}
+
+.btn-login:hover {
+  background-color: #F5F7F6 !important;
+  color: #1F3D2B !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-signup {
+  background-color: #9bada4 !important; 
+  color: #1F3D2B !important;
+  border: 1.5px solid #9bada4 !important;
+  font-size: 13px;
+  padding: 4px 20px;
+  border-radius: 20px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-signup:hover {
+  background-color: transparent !important;
+  color: #F5F7F6 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* --- HERO SECTION --- */
+.hero-full-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+}
+
+.hero-image {
+    width: 100%;
+    height: 70vh; 
+    overflow: hidden;
+    position: relative;
+}
+
+.hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    object-position: 50% 20%; 
+    transition: opacity 0.8s ease-in-out;
+}
+
+.hero-content-wrapper {
+    padding: 20px 0 30px 0;
+    text-align: center;
+    background: #ffffff;
+}
+
+.hero-main-message {
+    font-size: 18px;
+    color: #1F3D2B;
+    font-weight: 500;
+    max-width: 800px;
+    margin: 0 auto 15px auto;
+    line-height: 1.0; 
+    font-style: italic;
+    padding: 0 20px;
+}
+
+/* Main Start Button */
+.start-btn {
+    background-color: #1F3D2B !important;
+    color: #ffffff !important;
+    padding: 12px 45px !important;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 30px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: none;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.start-btn:hover {
+    transform: translateY(-3px);
+    background-color: #2d5a40 !important; 
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Features Interface Styles */
+.feature-box {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: 0.3s;
+}
+
+.icon-circle {
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    background: #1F3D2B;
+    color: white;
+    font-size: 30px;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+.feature-box:hover {
+    box-shadow: 0 10px 30px rgba(31, 61, 43, 0.1);
+    transform: translateY(-10px);
+}
+
+/* Responsive Handling */
+@media (max-width: 768px) {
+    .hero-image { height: 40vh !important; }
+    #features, #about {
+        text-align: center !important;
+    }
+}
+/* --- Action Buttons (Download & Share) --- */
+  .nav-btn-circle {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-size: 1.1rem;
+  }
+  .nav-btn-circle:hover { background: var(--accent-green); border-color: var(--accent-green); transform: translateY(-2px); }
+  .btn-share:hover { background: #25D366 !important; border-color: #25D366 !important; } /* WhatsApp Green */
+
+  /* Mobile adjustment for icons */
+  @media (max-width: 991px) {
+      .nav-actions-wrapper { order: 2; margin-left: auto; margin-right: 10px; }
+  }
+  /* --- Add these to the end of your CSS file --- */
+.remove-btn {
+    position: absolute; 
+    top: 5px; 
+    right: 5px; 
+    background: rgba(217, 83, 79, 0.9);
+    color: white; 
+    border-radius: 50%; 
+    width: 20px; 
+    height: 20px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 12px; 
+    cursor: pointer; 
+    z-index: 20;
+}
+.zoom-effect { 
+    cursor: zoom-in; 
+    transition: transform 0.3s; 
+}
+.zoomed { 
+    transform: scale(1.5); 
+    cursor: zoom-out; 
+    z-index: 100;
+}

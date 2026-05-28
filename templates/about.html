@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>About Us - HairLytics</title>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+   <style>
+       @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+ 
+       body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #000000;
+            background-color: #f4f7f5; 
+       }
+       
+       /* Navbar Height Reduced */
+       .navbar {
+            background-color: #1F3D2B;
+            padding: 5px 0 !important;
+            min-height: 60px;
+       }
+ 
+       .navbar-logo {
+            background: white;
+            border-radius: 50%;
+            padding: 2px;
+            width: 38px;
+            height: auto;
+            margin-right: 10px;
+       }
+ 
+       /* Underline Animation Setup */
+       .nav-link {
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.8) !important;
+            position: relative; 
+            display: inline-block;
+       }
+ 
+       /* The Animated Underline */
+       .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: #ffffff;
+            transition: all 0.3s ease-in-out;
+            transform: translateX(-50%);
+       }
+ 
+       .nav-link:hover::after, 
+       .nav-link.active::after {
+            width: 80%; 
+       }
+ 
+       .nav-link.active {
+            color: #fff !important;
+            font-weight: 700;
+       }
+ 
+       /* Hero Section */
+       .about-hero {
+            background-color: #ffffff; 
+            padding: 50px 0;
+            text-align: center;
+            border-bottom: 1px solid #e0eadd;
+       }
+ 
+       .about-hero h1 {
+            font-weight: 800;
+            color: #1F3D2B;
+       }
+ 
+       .hero-tagline {
+            font-size: 1rem;
+            color: #000000;
+            max-width: 650px;
+            margin: 10px auto 0;
+       }
+ 
+       .section-title {
+            color: #1F3D2B;
+            font-weight: 800;
+            margin-bottom: 15px;
+       }
+ 
+       p, .main-desc {
+            font-size: 1rem !important;
+            color: #000000 !important;
+            line-height: 1.6;
+       }
+ 
+       /* Continuous Floating Animation */
+       @keyframes continuousFloat {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+       }
+ 
+       .logo-float-continuous {
+            width: 300px; 
+            height: 300px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            border: 5px solid #1F3D2B; 
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
+            animation: continuousFloat 3s ease-in-out infinite;
+            transition: transform 0.3s ease;
+       }
+ 
+       /* 2x2 Grid Styling */
+       .feature-box {
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 2rem;
+            height: 100%;
+            border: 1px solid transparent;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.3s ease-in-out;
+       }
+ 
+       .feature-box:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(31, 61, 43, 0.15);
+            border-color: #1F3D2B;
+       }
+ 
+       .feature-box h2 {
+            font-size: 1.4rem;
+            color: #1F3D2B;
+            font-weight: 800;
+            margin-bottom: 15px;
+       }
+ 
+       /* Dark Green Compact Footer */
+       .main-footer {
+            background-color: #1F3D2B;
+            padding: 15px 0;
+            color: #ffffff;
+            margin-top: 50px;
+       }
+   </style>
+</head>
+<body>
+ 
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+ <div class="container">
+   <a class="navbar-brand fw-bold d-flex align-items-center py-0" href="{{ url_for('home') }}">
+     <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="navbar-logo"> HairLytics
+   </a>
+   <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+     <span class="navbar-toggler-icon" style="font-size: 0.8rem;"></span>
+   </button>
+   <div class="collapse navbar-collapse" id="navbarNav">
+     <ul class="navbar-nav mx-auto">
+       <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('home') }}">Home</a></li>
+       <li class="nav-item"><a class="nav-link px-3 active" href="{{ url_for('analyze') }}?page=about">About Us</a></li>
+       <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=features">Features</a></li>
+       <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=instructions">Instructions</a></li>
+       <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=contact">Contact Us</a></li>
+       <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=review">Feedback</a></li>
+       <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}">Analyze</a></li>
+     </ul>
+   </div>
+ </div>
+</nav>
+ 
+<header class="about-hero">
+   <div class="container">
+       <h1 class="display-5">About HairLytics</h1>
+       <p class="hero-tagline">
+           Empowering your hair journey through advanced AI analysis and personalized digital trichology.
+       </p>
+   </div>
+</header>
+ 
+<main class="container py-5">
+   <section class="row align-items-center mb-5">
+       <div class="col-lg-7">
+            <h2 class="section-title">Who We Are</h2>
+            <p>
+                HairLytics is a digital diagnostic platform dedicated to hair wellness. We bridge the gap between complex science and daily care by using AI to provide professional-grade hair insights directly to your device.
+            </p>
+            <h3 class="h6 mt-4 fw-bold text-uppercase" style="color: #1F3D2B; letter-spacing: 1px; font-weight: 800;">Our Mission</h3>
+            <p>
+                Our goal is to remove the guesswork from hair care. By understanding your hair's unique structure, we help you choose routines that truly work for you.
+            </p>
+       </div>
+       <div class="col-lg-5 text-center mt-4 mt-lg-0">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="img-fluid logo-float-continuous">
+       </div>
+   </section>
+ 
+   <div class="row g-4 justify-content-center">
+       <div class="col-md-6">
+            <div class="feature-box">
+                <h2>What We Do</h2>
+                <p class="mb-0">We perform digital screenings to analyze hair density, texture, and scalp health using high-end AI algorithms and computer vision.</p>
+            </div>
+       </div>
+       <div class="col-md-6">
+            <div class="feature-box">
+                <h2>How It Works</h2>
+                <p class="mb-0">Simply upload a photo. Our system processes it against thousands of clinical data points to give you a custom health report in seconds.</p>
+            </div>
+       </div>
+       <div class="col-md-6">
+            <div class="feature-box">
+                <h2>Innovation</h2>
+                <p class="mb-0">Built on state-of-the-art machine learning models, our tech ensures precise, secure, and laboratory-level analysis at your fingertips.</p>
+            </div>
+       </div>
+       <div class="col-md-6">
+            <div class="feature-box">
+                <h2>Future</h2>
+                <p class="mb-0">We are expanding into AR-powered styling tools and real-time scalp tracking to make hair wellness accessible to everyone, everywhere.</p>
+            </div>
+       </div>
+   </div>
+</main>
+ 
+<footer class="main-footer text-center">
+   <div class="container">
+       <p class="small mb-0" style="font-weight: 600;">&copy; 2026 HairLytics Technology. All rights reserved.</p>
+   </div>
+</footer>
+ 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

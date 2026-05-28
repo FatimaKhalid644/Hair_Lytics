@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HairLytics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+ 
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{{ url_for('home') }}">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="navbar-logo"> HairLytics
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('home') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=about">About Us</a></li>
+        <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=features">Features</a></li>
+        <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=instructions">Instructions</a></li>
+        <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=contact">Contact Us</a></li>
+        <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=review">Feedback</a></li>
+        <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=shop">Shop</a></li>
+      </ul>
+      <div class="d-flex auth-btns mt-2 mt-lg-0">
+        <button class="btn btn-login me-2" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+        <button class="btn btn-signup" data-bs-toggle="modal" data-bs-target="#signupModal">Sign Up</button>
+      </div>
+    </div>
+  </div>
+</nav>
+ 
+<div class="hero-full-container">
+  <section class="hero-image">
+    <img id="heroSlide" src="{{ url_for('static', filename='images/slide2.png') }}" alt="Hair Analysis">
+  </section>
+ 
+  <section class="hero-content-wrapper text-center">
+    <div class="container">
+      <div class="caption-container">
+        <p id="heroCaption" class="hero-main-message">
+          "Our application aims to enhance hair care practices through intelligent analysis and personalized recommendations."
+        </p>
+      </div>
+      <a href="{{ url_for('analyze') }}" class="btn btn-primary btn-lg rounded-pill start-btn">
+        Get Started
+      </a>
+    </div>
+  </section>
+</div>
+ 
+<div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0 shadow">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold" style="color: #1F3D2B;">Login</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form>
+          <input type="email" class="form-control mb-3" placeholder="Email" required>
+          <input type="password" class="form-control mb-3" placeholder="Password" required>
+          <button type="submit" class="btn btn-success w-100 py-2 btn-custom-green">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<div class="modal fade" id="signupModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0 shadow">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold" style="color: #1F3D2B;">Create Account</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form>
+          <input type="text" class="form-control mb-3" placeholder="Full Name" required>
+          <input type="email" class="form-control mb-3" placeholder="Email" required>
+          <input type="password" class="form-control mb-3" placeholder="Password" required>
+          <button type="submit" class="btn btn-success w-100 py-2 btn-custom-green">Sign Up</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+ 
+<script>
+  // JavaScript Slides Path Updated to use static folder context
+  const slides = [
+    { img: "/static/images/slide2.png", text: '"Our application aims to enhance hair care practices through intelligent analysis and personalized recommendations."' },
+    { img: "/static/images/slide1.png", text: '"Taking care of your hair is not just about looking good; it\'s about nurturing yourself and embracing your natural beauty 🌸"' }
+  ];
+ 
+  let currentIndex = 0;
+  const slideImg = document.getElementById("heroSlide");
+  const slideText = document.getElementById("heroCaption");
+ 
+  function updateSlide() {
+    currentIndex = (currentIndex + 1) % slides.length;
+    slideImg.style.opacity = "0";
+    slideText.style.opacity = "0";
+    setTimeout(() => {
+        slideImg.src = slides[currentIndex].img;
+        slideText.innerText = slides[currentIndex].text;
+        slideImg.style.opacity = "1";
+        slideText.style.opacity = "1";
+    }, 600);
+  }
+  setInterval(updateSlide, 8000); 
+</script>
+ 
+</body>
+</html>

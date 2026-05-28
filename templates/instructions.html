@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Instructions - HairLytics</title>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+       @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+ 
+       body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #ffffff; 
+            color: #000; 
+       }
+       
+       /* Compact Navbar with Left Logo */
+       .navbar {
+            background: #1F3D2B;
+            padding: 5px 0 !important; 
+            min-height: 60px;
+       }
+ 
+       .navbar-brand {
+            font-weight: 800; 
+            display: flex;
+            align-items: center;
+            font-size: 1.2rem;
+       }
+ 
+       .navbar-logo {
+            background: white;
+            border-radius: 50%;
+            padding: 2px;
+            width: 35px; 
+            height: 35px;
+            margin-right: 12px;
+            object-fit: contain;
+       }
+ 
+       /* --- Updated Nav Link Effects (Animated Underline & Bold) --- */
+       .navbar-nav .nav-link {
+            font-size: 0.95rem;
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+            position: relative; /* Base for underline */
+            transition: all 0.3s ease;
+            color: rgba(255,255,255,0.8) !important;
+       }
+ 
+       /* Underline Animation */
+       .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px; /* Position below the text */
+            left: 50%;
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+       }
+ 
+       /* Hover & Active: Underline + Bold Effect */
+       .navbar-nav .nav-link:hover,
+       .navbar-nav .nav-link.active {
+            color: #ffffff !important;
+            font-weight: 700; /* Bold effect */
+       }
+ 
+       .navbar-nav .nav-link:hover::after,
+       .navbar-nav .nav-link.active::after {
+            width: 80%; /* Underline length */
+       }
+       /* --- End of Updates --- */
+ 
+       .instr-header {
+            background-color: #ffffff; 
+            color: #1F3D2B;
+            padding: 60px 0 40px;
+            text-align: center;
+       }
+ 
+       .instr-header h1 {
+            font-weight: 800;
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+       }
+ 
+       .instr-header p {
+            font-weight: 700;
+            line-height: 1.6;
+       }
+ 
+       .cards-section {
+            background-color: #f8f9fa;
+            padding: 20px 0 60px;
+       }
+ 
+       .category-label {
+            font-weight: 800;
+            color: #1F3D2B;
+            font-size: 1.8rem;
+            margin: 40px 0 30px;
+            text-align: center;
+            display: block;
+       }
+ 
+       .instruction-card {
+            background: #ffffff;
+            border-radius: 20px;
+            border: 1px solid #eee;
+            transition: 0.3s;
+            height: 100%;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+       }
+ 
+       .instruction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(31, 61, 43, 0.08);
+       }
+ 
+       .step-img {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+       }
+ 
+       .card-bullets {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #333;
+       }
+ 
+       .card-bullets li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+       }
+ 
+       .card-bullets li::before {
+            content: "•";
+            color: #1F3D2B;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+       }
+ 
+       .custom-footer {
+            background-color: #1F3D2B;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+       }
+ 
+       .nav-link { text-decoration: none !important; }
+   </style>
+</head>
+<body>
+ 
+   <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+     <div class="container">
+       <a class="navbar-brand" href="{{ url_for('home') }}">
+         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="navbar-logo">
+         <span>HairLytics</span>
+       </a>
+       
+       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+         <span class="navbar-toggler-icon"></span>
+       </button>
+ 
+       <div class="collapse navbar-collapse" id="navbarNav">
+         <ul class="navbar-nav mx-auto">
+            <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('home') }}">Home</a></li>
+            <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=about">About Us</a></li>
+            <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=features">Features</a></li>
+            <li class="nav-item"><a class="nav-link px-3 active" href="{{ url_for('analyze') }}?page=instructions">Instructions</a></li>
+            <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=contact">Contact Us</a></li>
+            <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=review">Feedback</a></li>
+            <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}">Analyze</a></li>
+         </ul>
+       </div>
+     </div>
+   </nav>
+ 
+   <header class="instr-header">
+       <div class="container">
+           <h1>Care Instructions</h1>
+           <p>Master the art of hair maintenance with our expert directions.<br>
+           Follow these steps to maintain hair health and get the best results from your products.</p>
+       </div>
+   </header>
+ 
+   <div class="cards-section">
+       <div class="container">
+           
+            <span class="category-label">Daily Care Routine</span>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="instruction-card">
+                        <img src="{{ url_for('static', filename='images/im1.png') }}" alt="Shampoo" class="step-img">
+                        <div class="p-4">
+                            <h4 class="fw-bold">Shampooing</h4>
+                            <ul class="card-bullets">
+                                <li>Focus application only on the scalp area.</li>
+                                <li>Use lukewarm water to open hair cuticles.</li>
+                                <li>Massage gently with fingertips, never nails.</li>
+                                <li>Rinse thoroughly until water runs clear.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+ 
+                <div class="col-md-4">
+                    <div class="instruction-card">
+                        <img src="{{ url_for('static', filename='images/im2.png') }}" alt="Conditioner" class="step-img">
+                        <div class="p-4">
+                            <h4 class="fw-bold">Conditioning</h4>
+                            <ul class="card-bullets">
+                                <li>Apply from mid-lengths to hair tips.</li>
+                                <li>Strictly avoid applying on the scalp.</li>
+                                <li>Leave for 2-3 minutes for penetration.</li>
+                                <li>Rinse with cold water to seal cuticles.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+ 
+                <div class="col-md-4">
+                    <div class="instruction-card">
+                        <img src="{{ url_for('static', filename='images/im3.png') }}" alt="Oil" class="step-img">
+                        <div class="p-4">
+                            <h4 class="fw-bold">Oil Treatment</h4>
+                            <ul class="card-bullets">
+                                <li>Section hair and apply oil to the scalp.</li>
+                                <li>Use circular motions to boost blood flow.</li>
+                                <li>Leave for 30 minutes before washing.</li>
+                                <li>Wash with lukewarm water for best results.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+ 
+            <span class="category-label">Massage Techniques</span>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="instruction-card">
+                        <img src="{{ url_for('static', filename='images/im6.png') }}" alt="Scalp Massage" class="step-img">
+                        <div class="p-4">
+                            <h4 class="fw-bold">Circular Scalp Massage</h4>
+                            <ul class="card-bullets">
+                                <li>Apply light pressure using your finger pads.</li>
+                                <li>Move in small circular motions across the head.</li>
+                                <li>Reduces stress and promotes hair growth.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="instruction-card">
+                        <img src="{{ url_for('static', filename='images/im7.png') }}" alt="Inversion Technique" class="step-img">
+                        <div class="p-4">
+                            <h4 class="fw-bold">Inversion Stimulation</h4>
+                            <ul class="card-bullets">
+                                <li>Lower your head slightly to increase blood flow.</li>
+                                <li>Massage for 4-5 minutes daily.</li>
+                                <li>Helps oxygen reach the hair follicles.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+ 
+            <span class="category-label">Natural Home Remedies</span>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="instruction-card">
+                        <img src="{{ url_for('static', filename='images/im4.png') }}" alt="Remedy 1" class="step-img">
+                        <div class="p-4">
+                            <h4 class="fw-bold">Aloe Vera Mask</h4>
+                            <ul class="card-bullets">
+                                <li>Extract fresh gel and mix with 1 tsp honey.</li>
+                                <li>Apply to scalp for a cooling effect.</li>
+                                <li>Wash after 30 minutes for hydrated hair.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="instruction-card">
+                        <img src="{{ url_for('static', filename='images/im5.png') }}" alt="Remedy 2" class="step-img">
+                        <div class="p-4">
+                            <h4 class="fw-bold">Protein Boost</h4>
+                            <ul class="card-bullets">
+                                <li>Mix egg white with 2 tablespoons yogurt.</li>
+                                <li>Apply to hair lengths for structural repair.</li>
+                                <li>Rinse with cool water to prevent odor.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       </div>
+   </div>
+ 
+   <footer class="custom-footer">
+       <div class="container">
+            <p class="mb-0 small">© 2026 HairLytics - Scientific Hair Wellness</p>
+       </div>
+   </footer>
+ 
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

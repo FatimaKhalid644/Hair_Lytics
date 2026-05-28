@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Authorized Retailers - HairLytics</title>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+   <style>
+       @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+       
+       body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f4f7f5; color: #1F3D2B; }
+       
+       /* Navbar & Bell Icon */
+       .navbar { background: #1F3D2B; padding: 12px 0; }
+       .navbar-brand { color: white !important; font-weight: 700; text-decoration: none; }
+       .nav-link { color: rgba(255,255,255,0.8) !important; text-decoration: none; }
+       .bell-btn { position: relative; cursor: pointer; transition: 0.3s; padding: 5px 10px; border-radius: 50%; }
+       .bell-btn:hover { background: rgba(255,255,255,0.1); }
+       .notification-badge { position: absolute; top: 0; right: 2px; background: #ff4d4d; color: white; border-radius: 50%; padding: 2px 5px; font-size: 9px; font-weight: 800; }
+ 
+       .shop-header { background: white; padding: 60px 0; border-bottom: 1px solid #e0eadd; text-align: center; margin-bottom: 50px; }
+       
+       /* Card Styling */
+       .shop-card { border: none; border-radius: 24px; background: white; transition: 0.3s; height: 100%; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+       .shop-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(31, 61, 43, 0.12); }
+       .logo-box { height: 160px; display: flex; align-items: center; justify-content: center; background: #fbfdfb; border-radius: 24px 24px 0 0; padding: 30px; }
+       .logo-box img { max-width: 100%; max-height: 80px; object-fit: contain; }
+       
+       .shop-info { padding: 25px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; }
+       .tag { display: inline-block; background: #e0eadd; color: #1F3D2B; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 50px; margin-bottom: 12px; text-transform: uppercase; }
+ 
+       .buy-btn { background-color: #1F3D2B; color: white; border-radius: 14px; padding: 12px; font-weight: 700; text-decoration: none; transition: 0.3s; margin-top: auto; display: block; text-align: center; }
+       .buy-btn:hover { background-color: #2d5a3f; color: white; box-shadow: 0 5px 15px rgba(31, 61, 43, 0.3); }
+ 
+       /* Search Bar */
+       .search-bar { max-width: 600px; margin: -30px auto 0; background: white; padding: 8px; border-radius: 50px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); display: flex; transition: 0.3s; }
+       .search-bar:hover { box-shadow: 0 15px 30px rgba(31, 61, 43, 0.15); transform: scale(1.02); }
+       .search-bar input { border: none; padding: 10px 25px; width: 100%; border-radius: 50px; outline: none; }
+ 
+       /* Modal Customization */
+       .modal-content { border-radius: 28px; border: none; box-shadow: 0 25px 50px rgba(0,0,0,0.2); color: #1F3D2B; }
+       .option-chip { display: flex; align-items: center; background: #f8f9fa; padding: 10px 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #eee; transition: 0.2s; cursor: pointer; }
+       .option-chip input { margin-right: 12px; width: 18px; height: 18px; accent-color: #1F3D2B; }
+       .option-chip:hover { background: #e0eadd; border-color: #1F3D2B; }
+ 
+       .footer-dark { background-color: #1F3D2B; color: white; padding: 20px 0; margin-top: 60px; }
+   </style>
+</head>
+<body>
+ 
+   <nav class="navbar navbar-expand-lg sticky-top">
+       <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">HairLytics</a>
+            <div class="ms-auto d-flex align-items-center">
+                <a href="{{ url_for('home') }}" class="nav-link me-3 d-none d-md-block">Home</a>
+                <div class="bell-btn" onclick="openNotificationModal()">
+                    <i class="bi bi-bell-fill text-white fs-4"></i>
+                    <span class="notification-badge">!</span>
+                </div>
+            </div>
+       </div>
+   </nav>
+ 
+    <section class="shop-header">
+       <div class="container">
+            <span class="tag">Official Partners</span>
+            <h1>Authorized Retailers</h1>
+            <p class="text-muted">Direct links to authentic hair care products you can trust.</p>
+       </div>
+    </section>
+ 
+   <div class="container">
+       <div class="search-bar mb-5">
+            <input type="text" id="storeSearchInput" placeholder="Search for stores..." onkeyup="filterStores()">
+            <button class="btn btn-dark rounded-circle" style="width: 45px; height: 45px; background: #1F3D2B; border: none;"><i class="bi bi-search"></i></button>
+       </div>
+ 
+       <div class="row g-4" id="retailerCardsRow">
+            <div class="col-lg-4 col-md-6 shop-card-item">
+                <div class="shop-card">
+                    <div class="logo-box"><img src="{{ url_for('static', filename='images/c.png') }}" alt="Conatural"></div>
+                    <div class="shop-info">
+                        <span class="tag">Organic & Natural</span>
+                        <h5 class="fw-bold store-title">Conatural</h5>
+                        <p class="small text-muted">Best for chemical-free shampoos and herbal hair oils.</p>
+                        <a href="https://conaturalintl.com/collections/hair-care" target="_blank" class="buy-btn">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 shop-card-item">
+                <div class="shop-card">
+                    <div class="logo-box"><img src="{{ url_for('static', filename='images/image.png') }}" alt="The Body Shop"></div>
+                    <div class="shop-info">
+                       <span class="tag">International Quality</span>
+                        <h5 class="fw-bold store-title">The Body Shop</h5>
+                        <p class="small text-muted">Premium ginger shampoos and tea tree scalp treatments.</p>
+                        <a href="https://www.thebodyshop.pk/hair" target="_blank" class="buy-btn">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 shop-card-item">
+                <div class="shop-card">
+                    <div class="logo-box"><img src="{{ url_for('static', filename='images/image_copy.png') }}" alt="Hair Energy"></div>
+                    <div class="shop-info">
+                        <span class="tag">Scalp Specialist</span>
+                        <h5 class="fw-bold store-title">Hair Energy</h5>
+                        <p class="small text-muted">Organic hair oils and serums for intense hair growth.</p>
+                        <a href="https://hairenergyofficial.com" target="_blank" class="buy-btn">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+       </div>
+   </div>
+ 
+   <div class="modal fade" id="reminderModal" tabindex="-1" aria-hidden="true">
+       <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 pt-0 text-center">
+                    <div class="icon-circle bg-light d-inline-flex p-3 rounded-circle mb-3">
+                        <i class="bi bi-calendar-check text-success fs-2"></i>
+                    </div>
+                    <h4 class="fw-bold mb-1">Personal Reminder</h4>
+                    <p class="text-muted small mb-4">Choose your routine and we'll remind you!</p>
+                    
+                    <form id="reminderForm" class="text-start">
+                        <label class="fw-bold small mb-2">Select Treatments:</label>
+                        <div class="option-chip">
+                            <input type="checkbox" name="treatment" value="Hair Wash">
+                            <span>🚿 Hair Wash Reminder</span>
+                        </div>
+                        <div class="option-chip">
+                            <input type="checkbox" name="treatment" value="Hair Mask">
+                            <span>🌿 Hair Mask Session</span>
+                        </div>
+                        <div class="option-chip">
+                            <input type="checkbox" name="treatment" value="Hair Oiling">
+                            <span>🧴 Deep Oiling Routine</span>
+                        </div>
+ 
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <label class="fw-bold small mb-1">Every:</label>
+                                <select class="form-select border-0 bg-light" id="remindDay" style="border-radius: 12px;">
+                                    <option value="1">1 Day</option>
+                                    <option value="3">3 Days</option>
+                                    <option value="7">1 Week</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="fw-bold small mb-1">Email To:</label>
+                                <input type="email" class="form-control border-0 bg-light" id="remindEmail" placeholder="your@mail.com" style="border-radius: 12px;" required>
+                            </div>
+                        </div>
+ 
+                        <button type="submit" class="buy-btn w-100 border-0 mt-4 shadow-sm">Enable Notification</button>
+                    </form>
+                </div>
+            </div>
+       </div>
+   </div>
+ 
+   <footer class="footer-dark text-center">
+       <p class="mb-0 small">&copy; 2026 HairLytics Shop. All rights reserved.</p>
+   </footer>
+ 
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   <script>
+       function openNotificationModal() {
+            var myModal = new bootstrap.Modal(document.getElementById('reminderModal'));
+            myModal.show();
+       }
+ 
+       document.getElementById('reminderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const selectedTreatments = Array.from(document.querySelectorAll('input[name="treatment"]:checked'))
+                                            .map(cb => cb.value);
+            
+            if(selectedTreatments.length === 0) {
+                Swal.fire({ text: "Please select at least one treatment!", icon: "warning", confirmButtonColor: "#1F3D2B" });
+                return;
+            }
+ 
+            const day = document.getElementById('remindDay').value;
+            const email = document.getElementById('remindEmail').value;
+ 
+            Swal.fire({
+                title: 'Routine Set!',
+                html: `We will remind you for <b>${selectedTreatments.join(', ')}</b> every ${day} days on <b>${email}</b>.`,
+                icon: 'success',
+                confirmButtonColor: '#1F3D2B'
+            });
+ 
+            bootstrap.Modal.getInstance(document.getElementById('reminderModal')).hide();
+       });
+
+       // Live Client-Side Card Filter Action
+       function filterStores() {
+           let input = document.getElementById('storeSearchInput').value.toLowerCase();
+           let cards = document.getElementsByClassName('shop-card-item');
+           
+           for (let i = 0; i < cards.length; i++) {
+               let title = cards[i].querySelector('.store-title').innerText.toLowerCase();
+               if (title.includes(input)) {
+                   cards[i].style.display = "";
+               } else {
+                   cards[i].style.display = "none";
+               }
+           }
+       }
+   </script>
+</body>
+</html>

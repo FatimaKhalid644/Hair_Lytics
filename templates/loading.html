@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing - HairLytics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #1F3D2B;
+            --accent-green: #2D5A3F;
+            --bg-light: #F8FAF9;
+        }
+
+        body { 
+            background-color: var(--bg-light); 
+            font-family: 'Segoe UI', sans-serif; 
+            overflow: hidden; 
+        }
+
+        /* --- Navbar (Standardized Layout) --- */
+        .navbar {
+            background: var(--primary-green) !important;
+            padding: 5px 0 !important;
+            min-height: 50px;
+        }
+        .navbar-brand { 
+            font-weight: 800; 
+            color: #fff !important; 
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        .navbar-logo {
+            background: white;
+            border-radius: 50%;
+            padding: 2px;
+            width: 35px;
+            height: 35px;
+            margin-right: 12px;
+            object-fit: contain;
+        }
+
+        /* --- Processing Visuals --- */
+        .processing-img { 
+            width: 180px; 
+            height: 180px;
+            object-fit: contain;
+            animation: pulse 3s infinite ease-in-out; 
+        }
+        
+        @keyframes pulse { 
+            0% { transform: scale(1); opacity: 0.9; } 
+            50% { transform: scale(1.06); opacity: 1; filter: drop-shadow(0 10px 20px rgba(31,61,43,0.15)); } 
+            100% { transform: scale(1); opacity: 0.9; } 
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border-width: 0.25em;
+        }
+        .text-success {
+            color: var(--accent-green) !important;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('home') }}">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="navbar-logo" onerror="this.style.display='none'">
+            <span>HairLytics</span>
+        </a>
+    </div>
+</nav>
+ 
+<div class="container d-flex flex-column justify-content-center align-items-center text-center" style="min-height: 80vh;">
+    <img src="{{ url_for('static', filename='images/ai.png') }}" class="processing-img mb-4" alt="AI Engine" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2103/2103807.png'">
+    
+    <div class="spinner-border text-success mb-4" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    
+    <h4 class="fw-bold mb-2" style="color: var(--primary-green);">Analyzing your hair structure...</h4>
+    <p class="text-muted fs-6">Our AI engine is crafting a diagnostic breakdown for you 😉</p>
+</div>
+
+<script>
+    // LocalStorage checking & clean transition workflow
+    document.addEventListener("DOMContentLoaded", () => {
+        // Safe check block: Ensure prior dashboard inputs exist 
+        const evaluationPayload = localStorage.getItem("userHairData");
+        if (!evaluationPayload) {
+            console.warn("Direct navigation detected without prior scan state context.");
+        }
+
+        // Exact 3000ms systematic timeout sequence before route push
+        setTimeout(() => {
+            // Flask application endpoints standard routing template structure redirect
+            window.location.href = "{{ url_for('result') }}";
+        }, 3000);
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Features - HairLytics</title>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+   <style>
+       @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+ 
+       body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #000000;
+            background-color: #f4f7f5;
+       }
+       
+       /* Navbar - Fixed Height 60px with Zero Change in structure */
+       .navbar {
+            background: #1F3D2B;
+            padding: 0 !important; 
+            height: 60px; /* Exact 60px height */
+            display: flex;
+            align-items: center;
+       }
+ 
+       .navbar-brand {
+            padding-top: 0;
+            padding-bottom: 0;
+            display: flex;
+            align-items: center;
+       }
+ 
+       /* --- Updated Nav Link Effects --- */
+       .navbar-nav .nav-link {
+            text-decoration: none !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            height: 60px; 
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            position: relative; /* Base for underline */
+            transition: all 0.3s ease;
+            color: rgba(255,255,255,0.8) !important;
+       }
+ 
+       /* Underline Animation */
+       .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 12px; /* Position above bottom edge */
+            left: 50%;
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+       }
+ 
+       /* Hover: Underline + Bold Effect */
+       .navbar-nav .nav-link:hover {
+            color: #ffffff !important;
+            font-weight: 700; /* Bold effect */
+       }
+ 
+       .navbar-nav .nav-link:hover::after {
+            width: 70%; /* Underline expansion */
+       }
+ 
+       /* Active State Underline */
+       .navbar-nav .nav-link.active::after {
+            width: 70%;
+       }
+       /* --- End of Updates --- */
+ 
+       .navbar-logo {
+            background: white;
+            border-radius: 50%;
+            padding: 2px;
+            width: 36px; 
+            margin-right: 10px;
+       }
+ 
+       /* Hero Section */
+       .features-header {
+            background-color: #ffffff;
+            padding: 50px 0;
+            border-bottom: 1px solid #e0eadd;
+            text-align: center;
+       }
+ 
+       .features-header h1 {
+            font-weight: 800;
+            color: #1F3D2B;
+            font-size: 2.2rem;
+            letter-spacing: -0.5px;
+       }
+ 
+        /* Feature Box */
+       .feature-box {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 2rem 1.2rem;
+            height: 100%;
+            border: 1px solid rgba(0,0,0,0.03);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+       }
+ 
+       .feature-box:hover {
+            transform: translateY(-5px);
+            border-color: #1F3D2B;
+            box-shadow: 0 10px 25px rgba(31, 61, 43, 0.08);
+       }
+ 
+       .icon-circle {
+            width: 60px;
+            height: 60px;
+            background: #f0f4f1;
+            color: #1F3D2B;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 24px;
+            transition: 0.3s;
+       }
+ 
+       .feature-box:hover .icon-circle {
+            background: #1F3D2B;
+            color: #ffffff;
+       }
+ 
+       .feature-box h4 {
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #1F3D2B;
+            font-size: 1.1rem;
+       }
+ 
+       .feature-box p {
+            color: #444444;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            margin-bottom: 0;
+       }
+ 
+       .category-title {
+            font-weight: 800;
+            color: #1F3D2B;
+            margin-bottom: 25px;
+            font-size: 1.4rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+       }
+ 
+       /* Footer - Dark Green & Minimized */
+       .main-footer {
+            background-color: #1F3D2B;
+            padding: 15px 0; /* Minimized height */
+            color: #ffffff;
+            margin-top: 40px;
+       }
+ 
+       a {
+            text-decoration: none !important;
+       }
+   </style>
+</head>
+<body>
+ 
+   <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+     <div class="container">
+       <a class="navbar-brand fw-bold" href="{{ url_for('home') }}">
+         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="navbar-logo"> HairLytics
+       </a>
+       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+         <span class="navbar-toggler-icon"></span>
+       </button>
+       <div class="collapse navbar-collapse" id="navbarNav">
+         <ul class="navbar-nav mx-auto">
+            <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('home') }}">Home</a></li>
+            <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=about">About Us</a></li>
+            <li class="nav-item"><a class="nav-link px-3 active" href="{{ url_for('analyze') }}?page=features">Features</a></li>
+            <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=instructions">Instructions</a></li>
+            <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=contact">Contact Us</a></li>
+            <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=review">Feedback</a></li>
+            <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}">Analyze</a></li>
+         </ul>
+       </div>
+     </div>
+   </nav>
+ 
+   <header class="features-header">
+       <div class="container">
+           <h1>Product Ecosystem</h1>
+           <p style="color: #555555; font-size: 1rem;">Comprehensive solutions for hair health, analysis, and care.</p>
+       </div>
+   </header>
+ 
+   <div class="container py-5">
+       
+       <h3 class="category-title">Analysis & Assessment</h3>
+       <div class="row g-4 mb-5">
+           <div class="col-md-4">
+               <div class="feature-box text-center">
+                   <div class="icon-circle"><i class="bi bi-fingerprint"></i></div>
+                   <h4>Type Identification</h4>
+                   <p>Accurate identification of hair type, texture, and natural growth patterns.</p>
+               </div>
+           </div>
+           <div class="col-md-4">
+               <div class="feature-box text-center">
+                   <div class="icon-circle"><i class="bi bi-moisture"></i></div>
+                   <h4>Porosity & Health</h4>
+                   <p>Detection of hair porosity levels and overall scalp condition analysis.</p>
+               </div>
+           </div>
+           <div class="col-md-4">
+               <div class="feature-box text-center">
+                   <div class="icon-circle"><i class="bi bi-shield-exclamation"></i></div>
+                   <h4>Damage Assessment</h4>
+                   <p>Comprehensive evaluation of damage levels and hair fall pattern analysis.</p>
+               </div>
+           </div>
+       </div>
+ 
+       <h3 class="category-title">Personalized Care</h3>
+       <div class="row g-4 mb-5">
+           <div class="col-md-4">
+               <div class="feature-box text-center">
+                   <div class="icon-circle"><i class="bi bi-magic"></i></div>
+                   <h4>Product Suggestions</h4>
+                   <p>Tailored shampoo, conditioner, and oil recommendations based on results.</p>
+               </div>
+           </div>
+           <div class="col-md-4">
+               <div class="feature-box text-center">
+                   <div class="icon-circle"><i class="bi bi-calendar-check"></i></div>
+                   <h4>Weekly Routines</h4>
+                   <p>Step-by-step weekly care schedules and expert Do's & Don'ts guidance.</p>
+               </div>
+           </div>
+           <div class="col-md-4">
+               <div class="feature-box text-center">
+                   <div class="icon-circle"><i class="bi bi-cpu"></i></div>
+                   <h4>Smart Logic</h4>
+                   <p>Rule-based intelligent mapping for real-time and accurate result generation.</p>
+               </div>
+           </div>
+       </div>
+ 
+       <h3 class="category-title">Privacy & Performance</h3>
+       <div class="row g-4 mb-5">
+           <div class="col-md-4">
+               <div class="feature-box text-center">
+                   <div class="icon-circle"><i class="bi bi-incognito"></i></div>
+                   <h4>Secure & Private</h4>
+                   <p>No user data storage policy with completely secure and private usage protocols.</p>
+               </div>
+           </div>
+           <div class="col-md-4">
+               <div class="feature-box text-center">
+                   <div class="icon-circle"><i class="bi bi-lightning-charge"></i></div>
+                   <h4>Fast Processing</h4>
+                   <p>Lightweight frontend design ensures ultra-fast and reliable performance.</p>
+               </div>
+           </div>
+           <div class="col-md-4">
+               <div class="feature-box text-center">
+                   <div class="icon-circle"><i class="bi bi-rocket-takeoff"></i></div>
+                   <h4>Future-Ready</h4>
+                   <p>Upcoming AI image analysis, user accounts, and product comparison tools.</p>
+               </div>
+           </div>
+       </div>
+   </div>
+ 
+   <footer class="main-footer text-center">
+       <div class="container">
+           <p class="small mb-0" style="font-weight: 700;">&copy; 2026 HairLytics Technology. All rights reserved.</p>
+       </div>
+   </footer>
+ 
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
