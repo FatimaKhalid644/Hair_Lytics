@@ -89,20 +89,83 @@
 </div>
 
 <script>
-    // LocalStorage checking & clean transition workflow
-    document.addEventListener("DOMContentLoaded", () => {
-        // Safe check block: Ensure prior dashboard inputs exist 
-        const evaluationPayload = localStorage.getItem("userHairData");
-        if (!evaluationPayload) {
-            console.warn("Direct navigation detected without prior scan state context.");
-        }
+    document.addEventListener("DOMContentLoaded", function() {
+    const base64Image = localStorage.getItem("imageInTransit");
+    const rawPayload = localStorage.getItem("rawHairPayload");
+    
+    if(!base64Image) {
+        window.location.href = "{{ url_for('analyze') }}";
+        return;
+    }
 
-        // Exact 3000ms systematic timeout sequence before route push
-        setTimeout(() => {
-            // Flask application endpoints standard routing template structure redirect
+    // Dynamic status text changer taake user bore na ho aur timeline pata chale
+    const statusText = document.querySelector("h4.fw-bold");
+    const statusSteps = [
+        "Uploading diagnostic assets...",
+        "Scanning scalp surface markers...",
+        "Evaluating hair density & follicles...",
+        "Generating personalized roadmap..."
+    ];
+    let stepIndex = 0;
+    const intervalId = setInterval(() => {
+        if(stepIndex < statusSteps.length) {
+            statusText.innerText = statusSteps[stepIndex];
+            stepIndex++;
+        }
+    }, 4000); // Har 4 seconds baad message change hoga
+
+    const parsedPayload = rawPayload ? JSON.parse(rawPayload) : {};
+
+    fetch(base64Image)
+    .then(res => res.blob())
+    .then(blob => {
+        const formData = new FormData();
+        formData.append("image", blob, "scalp_shot.jpg");
+        
+        formData.append("oil", parsedPayload.oil || "");
+        formData.append("porosity", parsedPayload.porosity || "");
+        formData.append("strength", parsedPayload.strength || "");
+        formData.append("hairFall", parsedPayload.hairFall || "");
+        formData.append("scalpInput", parsedPayload.scalpInput || "");
+        formData.append("concern", parsedPayload.concern || "");
+
+        return fetch('/predict', {
+            method: 'POST',
+            body: formData
+        });
+    })
+    .then(response => response.json())
+    .then(data => {
+        clearInterval(intervalId); // Stop intervals
+        if (data.status === "success" || data.oil_balance) {
+            const finalResultBundle = {
+                oil: data.oil_balance || parsedPayload.oil,
+                porosity: data.porosity || parsedPayload.porosity,
+                strength: data.strength || parsedPayload.strength,
+                hairFall: data.hair_fall || parsedPayload.hairFall,
+                scalpInput: data.scalp_health || parsedPayload.scalpInput,
+                concern: parsedPayload.concern,
+                image: base64Image,
+                ai_report: data.ai_report || "Analysis validation complete."
+            };
+
+            localStorage.setItem("userHairData", JSON.stringify(finalResultBundle));
+            localStorage.removeItem("imageInTransit");
+            localStorage.removeItem("rawHairPayload");
+
             window.location.href = "{{ url_for('result') }}";
-        }, 3000);
+        } else {
+            alert("Analysis Error: " + (data.message || "Invalid server response."));
+            window.location.href = "{{ url_for('analyze') }}";
+        }
+    })
+    .catch(err => {
+        clearInterval(intervalId);
+        console.error("Pipeline failure:", err);
+        alert("Something went wrong during the analysis pipeline.");
+        window.location.href = "{{ url_for('analyze') }}";
     });
+});
 </script>
 </body>
 </html>
