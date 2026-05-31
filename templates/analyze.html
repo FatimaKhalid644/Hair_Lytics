@@ -407,7 +407,7 @@
     fileInput.onchange = (e) => {
         const files = Array.from(e.target.files);
         files.forEach((file) => {
-            if (imagesArray.length < 3) {
+            if (imagesArray.length < 3) { 
                 const reader = new FileReader();
                 reader.onload = (ev) => {
                     imagesArray.push(ev.target.result);
@@ -423,64 +423,40 @@
         setTimeout(() => { popup.classList.remove('show'); }, 3000);
     }
 
-    document.getElementById('analyzeForm').onsubmit = async (e) => {
+    // --- FORM HANDLER FOR SMOOTH REDIRECTION ---
+    document.getElementById('analyzeForm').onsubmit = function(e) {
         e.preventDefault();
-        if(imagesArray.length === 0){
+        
+        if (imagesArray.length === 0) {
             alert("Pehle pictures capture karein ya attach karein.");
             return;
         }
 
         const submitBtn = document.getElementById('submitBtn');
         stopCameraSystem();
-        submitBtn.disabled = true;
-        submitBtn.innerText = "Processing...";
-
-        const formData = new FormData();
-        const activeSrc = mainPreview.style.display === 'block' ? mainPreview.src : imagesArray[0];
         
-        try {
-            const response = await fetch(activeSrc);
-            const blob = await response.blob();
-            formData.append('image', blob, 'user_scalp.jpg');
+        // Button ko simple disable karein (koi text tabdeeli nahi hogi)
+        submitBtn.disabled = true;
 
-            const apiResponse = await fetch('/predict', {
-                method: 'POST',
-                body: formData
-            });
-            const result = await apiResponse.json();
+        // Target active snapshot choose karna
+        const activeSrc = mainPreview.style.display === 'block' ? mainPreview.src : imagesArray[0];
 
-            if(result.status === 'success') {
-                const hairData = {
-                    oil: document.getElementById("oil_balance").value,
-                    porosity: document.getElementById("porosity").value,
-                    strength: document.getElementById("strength").value,
-                    hairFall: document.getElementById("hair_fall").value,
-                    scalp: result.analysis, 
-                    recommendation: result.recommendation, 
-                    concern: document.getElementById("concernBox").value.trim() || "No custom concern provided",
-                    images: imagesArray
-                };
-                
-                localStorage.setItem("userHairData", JSON.stringify(hairData));
-                
-                // Immediately go to loading page using Jinja url_for syntax
-                window.location.href = "{{ url_for('loading') }}";
-                
-                setTimeout(() => {
-                    window.location.href = "{{ url_for('result') }}";
-                }, 2500);
-                
-            } else {
-                alert("AI Error: " + result.message);
-                submitBtn.disabled = false;
-                submitBtn.innerText = "Start Deep AI Analysis";
-            }
-        } catch (err) {
-            console.error(err);
-            alert("Backend server connection failed!");
-            submitBtn.disabled = false;
-            submitBtn.innerText = "Start Deep AI Analysis";
-        }
+        // Form fields payload object banana
+        const rawAnalysisData = {
+            oil: document.getElementById("oil_balance").value,
+            porosity: document.getElementById("porosity").value,
+            strength: document.getElementById("strength").value,
+            hairFall: document.getElementById("hair_fall").value,
+            scalpInput: document.getElementById("scalp_health").value,
+            concern: document.getElementById("concernBox").value.trim() || "No custom concern provided"
+        };
+
+        // Loading component pipelines ke sath compatibility maintain karne ke liye variables set karein
+        localStorage.setItem("imageInTransit", activeSrc);
+        localStorage.setItem("rawHairPayload", JSON.stringify(rawAnalysisData));
+
+        // Foran validation bypass karke Jinja route redirect trigger karein
+        window.location.href = "{{ url_for('loading') }}";
     };
          
     function startVoice() {
