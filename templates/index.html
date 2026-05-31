@@ -5,7 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HairLytics</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* Eye icon ko input field ke andar adjust karne ke liye css styling */
+        .password-container {
+            position: relative;
+        }
+        .password-container .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6c757d;
+            z-index: 10;
+        }
+        .password-container .form-control {
+            padding-right: 45px;
+        }
+    </style>
 </head>
 <body>
  
@@ -62,9 +81,14 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body p-4">
-        <form>
-          <input type="email" class="form-control mb-3" placeholder="Email" required>
-          <input type="password" class="form-control mb-3" placeholder="Password" required>
+        <form id="loginForm">
+          <input type="email" id="loginEmail" class="form-control mb-3" placeholder="Email" required>
+          
+          <div class="password-container mb-3">
+            <input type="password" id="loginPassword" class="form-control" placeholder="Password" required>
+            <i class="bi bi-eye-slash toggle-password" onclick="togglePasswordVisibility('loginPassword', this)"></i>
+          </div>
+          
           <button type="submit" class="btn btn-success w-100 py-2 btn-custom-green">Login</button>
         </form>
       </div>
@@ -80,10 +104,15 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body p-4">
-        <form>
-          <input type="text" class="form-control mb-3" placeholder="Full Name" required>
-          <input type="email" class="form-control mb-3" placeholder="Email" required>
-          <input type="password" class="form-control mb-3" placeholder="Password" required>
+        <form id="signupForm">
+          <input type="text" id="signupName" class="form-control mb-3" placeholder="Full Name" required>
+          <input type="email" id="signupEmail" class="form-control mb-3" placeholder="Email" required>
+          
+          <div class="password-container mb-3">
+            <input type="password" id="signupPassword" class="form-control" placeholder="Password" required>
+            <i class="bi bi-eye-slash toggle-password" onclick="togglePasswordVisibility('signupPassword', this)"></i>
+          </div>
+          
           <button type="submit" class="btn btn-success w-100 py-2 btn-custom-green">Sign Up</button>
         </form>
       </div>
@@ -92,9 +121,87 @@
 </div>
  
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
- 
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBRi70y3KXxoVtgSfN-ESQPZld9wj09O6U",
+      authDomain: "hairlytics-b6fd1.firebaseapp.com",
+      projectId: "hairlytics-b6fd1",
+      storageBucket: "hairlytics-b6fd1.firebasestorage.app",
+      messagingSenderId: "415155732581",
+      appId: "1:415155732581:web:8e58a2cce682d0751c868c",
+      measurementId: "G-2L23ZTGFLW"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Signup Logical Event
+    document.getElementById("signupForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const name = document.getElementById("signupName").value;
+        const email = document.getElementById("signupEmail").value;
+        const password = document.getElementById("signupPassword").value;
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            await setDoc(doc(db, "users", userCredential.user.uid), {
+                fullName: name,
+                email: email
+            });
+            alert("Account Created Successfully");
+        } catch(error) {
+            alert(error.message);
+            console.log(error);
+        }
+    });
+
+    // Login Logical Event
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("loginEmail").value;
+        const password = document.getElementById("loginPassword").value;
+
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            alert("Login Successful");
+            window.location.href = "/analyze";
+        } catch(error) {
+            alert(error.message);
+            console.log(error);
+        }
+    });
+</script>
+
 <script>
-  // JavaScript Slides Path Updated to use static folder context
+  // Password Hide and Show dynamically control karne ka function
+  function togglePasswordVisibility(inputId, iconElement) {
+    const passwordInput = document.getElementById(inputId);
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        iconElement.classList.remove("bi-eye-slash");
+        iconElement.classList.add("bi-eye");
+    } else {
+        passwordInput.type = "password";
+        iconElement.classList.remove("bi-eye");
+        iconElement.classList.add("bi-eye-slash");
+    }
+  }
+
+  // JavaScript Slides Carousel logic
   const slides = [
     { img: "/static/images/slide2.png", text: '"Our application aims to enhance hair care practices through intelligent analysis and personalized recommendations."' },
     { img: "/static/images/slide1.png", text: '"Taking care of your hair is not just about looking good; it\'s about nurturing yourself and embracing your natural beauty 🌸"' }
