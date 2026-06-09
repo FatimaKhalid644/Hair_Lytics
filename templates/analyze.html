@@ -16,7 +16,7 @@
 
         body { background-color: var(--bg-light); font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
 
-        /* --- Navbar (Standardized Styling) --- */
+        /* --- Navbar --- */
         .navbar {
             background: var(--primary-green) !important;
             padding: 5px 0 !important;
@@ -147,8 +147,10 @@
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('home') }}">Home</a></li>
                 <li class="nav-item"><a class="nav-link px-3 active" href="{{ url_for('analyze') }}">Analyze</a></li>
-                <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=features">Features</a></li>
                 <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=about">About Us</a></li>
+                <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=features">Features</a></li>
+                <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=instructions">Instructions</a></li>
+                <li class="nav-item"><a class="nav-link custom-link" href="{{ url_for('porosity') }}">KeraAI Lab</a></li>
                 <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=review">Feedback</a></li>
                 <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=shop">Shop</a></li>
             </ul>
@@ -162,18 +164,17 @@
             <div class="col-md-5 left-panel">
                 <div class="main-display-box" id="dropZone">
                     <div id="no-img-text" class="text-muted small">Capture or Upload Photos</div>
-                    <video id="videoFeed" autoplay playsinline style="display:none; width: 100%; height: 100%; object-fit: cover;"></video>
+                    <video id="videoFeed" autoplay playsinline muted style="display:none; width: 100%; height: 100%; object-fit: cover;"></video>
                     <img id="mainPreview" style="display:none; width: 100%; height: 100%; object-fit: cover;">
-                    
+                     
                     <div class="preview-overlay-tools">
                         <i class="bi bi-camera" id="camBtn" onclick="openCamera()" title="Take Photo"></i>
                         <i class="bi bi-camera-fill" id="captureBtn" onclick="captureImage()" title="Capture Snapshot" style="display: none; color: #d9534f;"></i>
                         <label for="fileInput" class="m-0"><i class="bi bi-paperclip" title="Attach File"></i></label>
-                        <i class="bi bi-mic" onclick="startVoice()" title="Voice Input"></i>
                     </div>
                     <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
                 </div>
-                
+                 
                 <div class="row g-2">
                     <div class="col-4"><div class="preview-item bg-white border rounded position-relative" id="p1" style="aspect-ratio:1; display:flex; align-items:center; justify-content:center; overflow:hidden; cursor:pointer;" onclick="switchMainPreview(0)"><i class="bi bi-image text-muted"></i></div></div>
                     <div class="col-4"><div class="preview-item bg-white border rounded position-relative" id="p2" style="aspect-ratio:1; display:flex; align-items:center; justify-content:center; overflow:hidden; cursor:pointer;" onclick="switchMainPreview(1)"><i class="bi bi-image text-muted"></i></div></div>
@@ -184,7 +185,7 @@
             <div class="col-md-7 right-panel">
                 <h3 class="fw-bold mb-4" style="color: var(--primary-green);">Detailed Hair Assessment</h3>
                 <form id="analyzeForm">
-                    
+                     
                     <div class="mb-3">
                         <label class="form-label fw-bold"><i class="bi bi-droplet-half"></i> Hair & Scalp Oil Balance</label>
                         <select class="form-select" id="oil_balance" required>
@@ -261,6 +262,60 @@
         </div>
     </div>
 </div>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+<script>
+    // 2. Aapki Firebase Config
+    const firebaseConfig = {
+        apiKey: "AIzaSyBRi70y3KXxoVtgSfN-ESQPZld9wj09O6U",
+        authDomain: "hairlytics-b6fd1.firebaseapp.com",
+        projectId: "hairlytics-b6fd1",
+        storageBucket: "hairlytics-b6fd1.firebasestorage.app",
+        messagingSenderId: "415155732581",
+        appId: "1:415155732581:web:8e58a2cce682d0751c868c",
+        measurementId: "G-2L23ZTGFLW"
+    };
+
+    // 3. Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // 4. Form Submit hone pr data save karne ka function
+    // Initialization mein ye line add karein
+const storage = firebase.storage();
+
+async function uploadImagesToStorage(images) {
+    const downloadURLs = [];
+    for (let i = 0; i < images.length; i++) {
+        const fileBlob = dataURLtoBlob(images[i]);
+        // Unique filename banayein
+        const storageRef = storage.ref(`scalp_images/${Date.now()}_${i}.jpg`);
+        const snapshot = await storageRef.put(fileBlob);
+        const url = await snapshot.ref.getDownloadURL();
+        downloadURLs.push(url);
+    }
+    return downloadURLs;
+}
+    // Isko aap apne existing onsubmit handler ke andar fetch() ke sath ya fetch() ki jagah laga sakte hain
+    function saveToFirebase(formDataObject) {
+        db.collection("analyses").add({
+            oil: formDataObject.oil,
+            porosity: formDataObject.porosity,
+            strength: formDataObject.strength,
+            hairFall: formDataObject.hairFall,
+            scalpInput: formDataObject.scalpInput,
+            concern: formDataObject.concern,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        .then((docRef) => {
+            console.log("Document written with ID: ", docRef.id);
+        })
+        .catch((error) => {
+            console.error("Error adding document: ", error);
+        });
+    }
+</script>
 <script>
     let imagesArray = [];
     let stream = null;
@@ -272,6 +327,11 @@
     const popup = document.getElementById('limitPopup');
     const camBtn = document.getElementById('camBtn');
     const captureBtn = document.getElementById('captureBtn');
+    const dropZone = document.getElementById('dropZone');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => e.preventDefault(), false);
+    });
 
     async function openCamera() {
         if (imagesArray.length >= 3) {
@@ -285,54 +345,65 @@
                 stream = null;
             }
 
-            stream = await navigator.mediaDevices.getUserMedia({
-                video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" },
+            const constraints = {
+                video: {
+                    width: { min: 640, ideal: 1280, max: 1920 },
+                    height: { min: 480, ideal: 720, max: 1080 },
+                    facingMode: "user"
+                },
                 audio: false
-            });
+            };
 
-            videoFeed.srcObject = stream;
-            videoFeed.style.display = "block";
-            mainPreview.style.display = "none";
-            noImgText.style.display = "none";
-            
-            await videoFeed.play();
-
-            camBtn.style.display = "none";
-            captureBtn.style.display = "inline-block";
+            stream = await navigator.mediaDevices.getUserMedia(constraints);
+            await bindAndPlayStream();
 
         } catch (err) {
-            console.error("Camera Initializing Error: ", err);
-            alert("Camera access nahi mila. Kindly browser permissions settings check karein.");
+            console.error("Primary Camera Initializing Error: ", err);
+            if (err.name === "OverconstrainedError" || err.name === "ConstraintNotSatisfiedError" || err.name === "NotReadableError") {
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                    await bindAndPlayStream();
+                    return;
+                } catch (fallbackErr) {
+                    console.error("Complete hardware fallback failed:", fallbackErr);
+                }
+            }
+            alert("Camera access nahi mila. Permissions check karein.");
+        }
+    }
+
+    async function bindAndPlayStream() {
+        if (!stream) return;
+        videoFeed.srcObject = stream;
+        videoFeed.style.display = "block";
+        mainPreview.style.display = "none";
+        noImgText.style.display = "none";
+        camBtn.style.display = "none";
+        captureBtn.style.display = "inline-block";
+
+        try {
+            await videoFeed.play();
+        } catch(e) {
+            console.error("Playback failed:", e);
         }
     }
 
     function captureImage() {
-        if (!stream || !videoFeed) {
-            alert("Camera chalu nahi hai!");
-            return;
-        }
-
-        if (imagesArray.length >= 3) {
-            showLimitPopup();
-            return;
-        }
+        if (!stream || !videoFeed || videoFeed.paused) return;
+        if (imagesArray.length >= 3) { showLimitPopup(); return; }
 
         const canvas = document.createElement('canvas');
         canvas.width = videoFeed.videoWidth || 640;
         canvas.height = videoFeed.videoHeight || 480;
-
         const ctx = canvas.getContext('2d');
         ctx.drawImage(videoFeed, 0, 0, canvas.width, canvas.height);
 
-        const imageData = canvas.toDataURL('image/jpeg', 0.95);
-        imagesArray.push(imageData);
-
+        imagesArray.push(canvas.toDataURL('image/jpeg', 0.95));
         updateGallery();
     }
 
     function removeImage(index, event) {
         if(event) event.stopPropagation();
-        
         imagesArray.splice(index, 1);
         updateGallery();
 
@@ -370,29 +441,25 @@
         } else if (stream && videoFeed.style.display === "block") {
             camBtn.style.display = "none";
             captureBtn.style.display = "inline-block";
-        } else {
-            if(imagesArray.length > 0) {
-                switchMainPreview(imagesArray.length - 1);
-            }
+        } else if (imagesArray.length > 0) {
+            switchMainPreview(imagesArray.length - 1);
         }
     }
 
     function switchMainPreview(index) {
         if (imagesArray[index]) {
+            stopCameraSystem(); 
             videoFeed.style.display = "none";
             mainPreview.src = imagesArray[index];
             mainPreview.style.display = "block";
             mainPreview.classList.add('zoom-effect');
             noImgText.style.display = "none";
-            
             camBtn.style.display = "inline-block";
             captureBtn.style.display = "none";
         }
     }
 
-    mainPreview.onclick = function() {
-        this.classList.toggle('zoomed');
-    };
+    mainPreview.onclick = function() { this.classList.toggle('zoomed'); };
 
     function stopCameraSystem() {
         if (stream) {
@@ -406,12 +473,14 @@
 
     fileInput.onchange = (e) => {
         const files = Array.from(e.target.files);
+        let loadedCount = 0;
         files.forEach((file) => {
             if (imagesArray.length < 3) { 
                 const reader = new FileReader();
                 reader.onload = (ev) => {
                     imagesArray.push(ev.target.result);
-                    updateGallery();
+                    loadedCount++;
+                    if (loadedCount === files.length || imagesArray.length === 3) updateGallery();
                 };
                 reader.readAsDataURL(file);
             }
@@ -423,52 +492,86 @@
         setTimeout(() => { popup.classList.remove('show'); }, 3000);
     }
 
-    // --- FORM HANDLER FOR SMOOTH REDIRECTION ---
-    document.getElementById('analyzeForm').onsubmit = function(e) {
-        e.preventDefault();
-        
-        if (imagesArray.length === 0) {
-            alert("Pehle pictures capture karein ya attach karein.");
-            return;
-        }
-
-        const submitBtn = document.getElementById('submitBtn');
-        stopCameraSystem();
-        
-        // Button ko simple disable karein (koi text tabdeeli nahi hogi)
-        submitBtn.disabled = true;
-
-        // Target active snapshot choose karna
-        const activeSrc = mainPreview.style.display === 'block' ? mainPreview.src : imagesArray[0];
-
-        // Form fields payload object banana
-        const rawAnalysisData = {
-            oil: document.getElementById("oil_balance").value,
-            porosity: document.getElementById("porosity").value,
-            strength: document.getElementById("strength").value,
-            hairFall: document.getElementById("hair_fall").value,
-            scalpInput: document.getElementById("scalp_health").value,
-            concern: document.getElementById("concernBox").value.trim() || "No custom concern provided"
-        };
-
-        // Loading component pipelines ke sath compatibility maintain karne ke liye variables set karein
-        localStorage.setItem("imageInTransit", activeSrc);
-        localStorage.setItem("rawHairPayload", JSON.stringify(rawAnalysisData));
-
-        // Foran validation bypass karke Jinja route redirect trigger karein
-        window.location.href = "{{ url_for('loading') }}";
-    };
-         
-    function startVoice() {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) return;
-        const recognition = new SpeechRecognition();
-        const concernBox = document.getElementById("concernBox");
-        recognition.onresult = (e) => {
-            concernBox.value += " " + e.results[0][0].transcript;
-        };
-        recognition.start();
+    // Helper to turn base64 strings into standard raw blob files for standard backend form processing
+    function dataURLtoBlob(dataurl) {
+        let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+        return new Blob([u8arr], {type:mime});
     }
-</script>
+    document.getElementById('analyzeForm').onsubmit = async function(e) {
+    e.preventDefault();
+    if (imagesArray.length === 0) { alert("Pehle pictures capture karein ya attach karein."); return; }
+
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Analyzing Scalp Profile...";
+    stopCameraSystem();
+
+    const activeSrc = mainPreview.style.display === 'block' ? mainPreview.src : imagesArray[0];
+    
+    // 1. Firebase ke liye data object taiyar karein
+    const firebaseData = {
+        oil: document.getElementById("oil_balance").value,
+        porosity: document.getElementById("porosity").value,
+        strength: document.getElementById("strength").value,
+        hairFall: document.getElementById("hair_fall").value,
+        scalpInput: document.getElementById("scalp_health").value,
+        concern: document.getElementById("concernBox").value.trim() || "No custom concern provided"
+    };
+
+    try {
+        // 2. Pehle Firestore me data save hone ka intezar karein
+        await db.collection("analyses").add({
+            oil: firebaseData.oil,
+            porosity: firebaseData.porosity,
+            strength: firebaseData.strength,
+            hairFall: firebaseData.hairFall,
+            scalpInput: firebaseData.scalpInput,
+            concern: firebaseData.concern,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        console.log("Data successfully saved to Firebase!");
+
+    } catch (firebaseError) {
+        // Agar Firebase me koi masla aaye toh console me dikhe, lekin user ka flow na tute
+        console.error("Firebase save failed: ", firebaseError);
+    }
+
+    // Backend (Flask) ke liye FormData taiyar karein
+    const formData = new FormData();
+    formData.append("oil", firebaseData.oil);
+    formData.append("porosity", firebaseData.porosity);
+    formData.append("strength", firebaseData.strength);
+    formData.append("hairFall", firebaseData.hairFall);
+    formData.append("scalpInput", firebaseData.scalpInput);
+    formData.append("concern", firebaseData.concern);
+    
+    imagesArray.forEach((imgBase64, index) => {
+        const blobFile = dataURLtoBlob(imgBase64);
+        formData.append("images", blobFile, `scalp_capture_${index}.jpg`);
+    });
+
+    localStorage.setItem("imageInTransit", activeSrc);
+
+    // 3. Flask backend par prediction request bhejein (isay await nahi karenge taake yeh background me chalti rahe)
+    fetch("/predict", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Agar aap loading screen par reh kar hi automatic result par jana chahti hain, 
+        // toh result routing ka code loading page ke JS me hona chahiye.
+        console.log("Backend process status: ", data.status);
+    })
+    .catch(err => {
+        console.error("Backend Failure: ", err);
+    });
+    
+    // 4. Firebase me save hote hi user ko fauran Loading screen par bhej dein
+    window.location.href = "{{ url_for('loading') }}";
+};
+    </script>
 </body>
 </html>
