@@ -8,7 +8,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
-        /* Eye icon ko input field ke andar adjust karne ke liye css styling */
+        /* Strict Lock Style: Initial screen content fully hidden */
+        body {
+            display: none;
+            background-color: #f8f9fa;
+        }
+
+        /* Eye icon positioning inside password field */
         .password-container {
             position: relative;
         }
@@ -24,9 +30,56 @@
         .password-container .form-control {
             padding-right: 45px;
         }
+        
+        /* Links style enhancement */
+        .auth-switch-link {
+            color: #1F3D2B;
+            font-weight: bold;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .auth-switch-link:hover {
+            color: #14291D;
+            text-decoration: underline;
+        }
+
+        /* PREMIUM PROFESSIONAL BUTTONS STYLING */
+        .btn-custom-green {
+            background-color: #1F3D2B !important;
+            border: 1px solid #1F3D2B !important;
+            color: #ffffff !important;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 12px rgba(31, 61, 43, 0.15);
+        }
+        .btn-custom-green:hover {
+            background-color: #14291D !important;
+            border-color: #14291D !important;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(31, 61, 43, 0.25);
+        }
+        .btn-custom-green:active {
+            transform: translateY(1px);
+        }
+        
+        /* Modal Content Polish */
+        .modal-content {
+            background-color: #ffffff;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+            border: none !important;
+        }
+        .form-control {
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+        .form-control:focus {
+            border-color: #1F3D2B;
+            box-shadow: 0 0 0 3px rgba(31, 61, 43, 0.15);
+        }
     </style>
 </head>
-<body>
+<body id="mainBody">
  
 <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
   <div class="container">
@@ -38,18 +91,18 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mx-auto">
-        <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('home') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link px-3 active" href="{{ url_for('home') }}">Home</a></li>
         <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=about">About Us</a></li>
         <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=features">Features</a></li>
         <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=instructions">Instructions</a></li>
+        <li class="nav-item"><a class="nav-link custom-link" href="{{ url_for('porosity') }}">KeraAI Lab</a></li>
         <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=contact">Contact Us</a></li>
         <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=review">Feedback</a></li>
         <li class="nav-item"><a class="nav-link px-3" href="{{ url_for('analyze') }}?page=shop">Shop</a></li>
       </ul>
-      <div class="d-flex auth-btns mt-2 mt-lg-0">
-        <button class="btn btn-login me-2" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
-        <button class="btn btn-signup" data-bs-toggle="modal" data-bs-target="#signupModal">Sign Up</button>
-      </div>
+      
+      <div class="d-flex auth-btns mt-2 mt-lg-0" id="authButtonsContainer">
+          </div>
     </div>
   </div>
 </nav>
@@ -66,30 +119,34 @@
           "Our application aims to enhance hair care practices through intelligent analysis and personalized recommendations."
         </p>
       </div>
-      <a href="{{ url_for('analyze') }}" class="btn btn-primary btn-lg rounded-pill start-btn">
-        Get Started
-      </a>
+      <button id="getStartedBtn" class="btn btn-primary btn-lg rounded-pill start-btn">
+          Get Started
+      </button>
     </div>
   </section>
 </div>
  
 <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content rounded-4 border-0 shadow">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fw-bold" style="color: #1F3D2B;">Login</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="modal-content rounded-4">
+      <div class="modal-header border-0 pb-0 justify-content-center pt-4">
+        <h3 class="modal-title fw-bold" style="color: #1F3D2B;">Welcome Back</h3>
       </div>
-      <div class="modal-body p-4">
-        <form id="loginForm">
-          <input type="email" id="loginEmail" class="form-control mb-3" placeholder="Email" required>
+      <div class="modal-body p-4 pt-2">
+        <p class="text-center text-muted small mb-4">Please log in to your account to access HairLytics features.</p>
+        <form id="loginForm" autocomplete="off">
+          <input type="email" id="loginEmail" class="form-control mb-3 py-2.5 rounded-3" placeholder="Email Address" autocomplete="username" required>
           
-          <div class="password-container mb-3">
-            <input type="password" id="loginPassword" class="form-control" placeholder="Password" required>
+          <div class="password-container mb-4">
+            <input type="password" id="loginPassword" class="form-control py-2.5 rounded-3" placeholder="Password" autocomplete="current-password" required>
             <i class="bi bi-eye-slash toggle-password" onclick="togglePasswordVisibility('loginPassword', this)"></i>
           </div>
           
-          <button type="submit" class="btn btn-success w-100 py-2 btn-custom-green">Login</button>
+          <button type="submit" class="btn btn-custom-green w-100 py-2.5 rounded-pill mb-3">Login</button>
+          
+          <div class="text-center pt-2">
+            <p class="mb-0 small text-muted">Don't have an account? <a href="#" id="switchToSignup" class="auth-switch-link">Sign Up</a></p>
+          </div>
         </form>
       </div>
     </div>
@@ -98,22 +155,26 @@
  
 <div class="modal fade" id="signupModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content rounded-4 border-0 shadow">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fw-bold" style="color: #1F3D2B;">Create Account</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="modal-content rounded-4">
+      <div class="modal-header border-0 pb-0 justify-content-center pt-4">
+        <h3 class="modal-title fw-bold" style="color: #1F3D2B;">Create Account</h3>
       </div>
-      <div class="modal-body p-4">
-        <form id="signupForm">
-          <input type="text" id="signupName" class="form-control mb-3" placeholder="Full Name" required>
-          <input type="email" id="signupEmail" class="form-control mb-3" placeholder="Email" required>
+      <div class="modal-body p-4 pt-2">
+        <p class="text-center text-muted small mb-4">Join HairLytics today for your smart hair diagnostics.</p>
+        <form id="signupForm" autocomplete="off">
+          <input type="text" id="signupName" class="form-control mb-3 py-2.5 rounded-3" placeholder="Full Name" autocomplete="new-password" required>
+          <input type="email" id="signupEmail" class="form-control mb-3 py-2.5 rounded-3" placeholder="Email Address" autocomplete="new-password" required>
           
-          <div class="password-container mb-3">
-            <input type="password" id="signupPassword" class="form-control" placeholder="Password" required>
+          <div class="password-container mb-4">
+            <input type="password" id="signupPassword" class="form-control py-2.5 rounded-3" placeholder="Password" autocomplete="new-password" required>
             <i class="bi bi-eye-slash toggle-password" onclick="togglePasswordVisibility('signupPassword', this)"></i>
           </div>
           
-          <button type="submit" class="btn btn-success w-100 py-2 btn-custom-green">Sign Up</button>
+          <button type="submit" class="btn btn-custom-green w-100 py-2.5 rounded-pill mb-3">Sign Up</button>
+          
+          <div class="text-center pt-2">
+            <p class="mb-0 small text-muted">Already have an account? <a href="#" id="switchToLogin" class="auth-switch-link">Login</a></p>
+          </div>
         </form>
       </div>
     </div>
@@ -123,71 +184,191 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import {
-      getFirestore,
-      doc,
-      setDoc
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+  setPersistence,
+  browserSessionPersistence
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBRi70y3KXxoVtgSfN-ESQPZld9wj09O6U",
-      authDomain: "hairlytics-b6fd1.firebaseapp.com",
-      projectId: "hairlytics-b6fd1",
-      storageBucket: "hairlytics-b6fd1.firebasestorage.app",
-      messagingSenderId: "415155732581",
-      appId: "1:415155732581:web:8e58a2cce682d0751c868c",
-      measurementId: "G-2L23ZTGFLW"
-    };
+const firebaseConfig = {
+  apiKey: "AIzaSyBRi70y3KXxoVtgSfN-ESQPZld9wj09O6U",
+  authDomain: "hairlytics-b6fd1.firebaseapp.com",
+  projectId: "hairlytics-b6fd1",
+  storageBucket: "hairlytics-b6fd1.firebasestorage.app",
+  messagingSenderId: "415155732581",
+  appId: "1:415155732581:web:8e58a2cce682d0751c868c",
+  measurementId: "G-2L23ZTGFLW"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-    // Signup Logical Event
-    document.getElementById("signupForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const name = document.getElementById("signupName").value;
-        const email = document.getElementById("signupEmail").value;
-        const password = document.getElementById("signupPassword").value;
+let currentUser = null;
+const authButtonsContainer = document.getElementById("authButtonsContainer");
+const mainBody = document.getElementById("mainBody");
 
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            await setDoc(doc(db, "users", userCredential.user.uid), {
-                fullName: name,
-                email: email
+// Function to securely empty all form fields
+function clearAuthFields() {
+    // Clear Login
+    const loginEmail = document.getElementById("loginEmail");
+    const loginPass = document.getElementById("loginPassword");
+    if(loginEmail) loginEmail.value = "";
+    if(loginPass) loginPass.value = "";
+
+    // Clear Signup
+    const signupName = document.getElementById("signupName");
+    const signupEmail = document.getElementById("signupEmail");
+    const signupPass = document.getElementById("signupPassword");
+    if(signupName) signupName.value = "";
+    if(signupEmail) signupEmail.value = "";
+    if(signupPass) signupPass.value = "";
+}
+
+// Set Persistence to Session Level so tabs/refreshes isolate multiple users
+setPersistence(auth, browserSessionPersistence)
+  .then(() => {
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUser = user;
+            mainBody.style.display = "block";
+            
+            authButtonsContainer.innerHTML = `
+                <button class="btn btn-outline-light rounded-pill px-4" id="navLogoutBtn">Logout</button>
+            `;
+            
+            document.getElementById("navLogoutBtn").addEventListener("click", async () => {
+                try {
+                    mainBody.style.display = "none";
+                    await signOut(auth);
+                    clearAuthFields();
+                    alert("Logged out successfully");
+                    window.location.href = "{{ url_for('home') }}"; 
+                } catch (error) {
+                    console.error("Logout Error:", error);
+                    mainBody.style.display = "block";
+                }
             });
-            alert("Account Created Successfully");
-        } catch(error) {
-            alert(error.message);
-            console.log(error);
+        } else {
+            currentUser = null;
+            mainBody.style.display = "block";
+            
+            authButtonsContainer.innerHTML = `
+                <button class="btn btn-login me-2" id="navLoginBtn">Login</button>
+                <button class="btn btn-signup" id="navSignupBtn">Sign Up</button>
+            `;
+
+            document.getElementById("navLoginBtn").addEventListener("click", () => {
+                clearAuthFields();
+                openModalWithStatic('loginModal');
+            });
+            
+            document.getElementById("navSignupBtn").addEventListener("click", () => {
+                clearAuthFields();
+                openModalWithStatic('signupModal');
+            });
         }
     });
+  })
+  .catch((error) => {
+      console.error("Persistence configuration failed:", error);
+  });
 
-    // Login Logical Event
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const email = document.getElementById("loginEmail").value;
-        const password = document.getElementById("loginPassword").value;
+function openModalWithStatic(modalId) {
+    const modalElement = document.getElementById(modalId);
+    modalElement.setAttribute('data-bs-backdrop', 'static');
+    modalElement.setAttribute('data-bs-keyboard', 'false');
+    const modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+    modalInstance.show();
+}
 
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-            alert("Login Successful");
-            window.location.href = "/analyze";
-        } catch(error) {
-            alert(error.message);
-            console.log(error);
-        }
-    });
+// Switch links operational controls
+document.getElementById("switchToSignup").addEventListener("click", (e) => {
+    e.preventDefault();
+    const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+    if(loginModal) loginModal.hide();
+    clearAuthFields();
+    setTimeout(() => { openModalWithStatic('signupModal'); }, 350);
+});
+
+document.getElementById("switchToLogin").addEventListener("click", (e) => {
+    e.preventDefault();
+    const signupModal = bootstrap.Modal.getInstance(document.getElementById('signupModal'));
+    if(signupModal) signupModal.hide();
+    clearAuthFields();
+    setTimeout(() => { openModalWithStatic('loginModal'); }, 350);
+});
+
+// Get Started Trigger
+document.getElementById("getStartedBtn").addEventListener("click", () => {
+    if (currentUser) {
+        window.location.href = "{{ url_for('analyze') }}";
+    } else {
+        clearAuthFields();
+        openModalWithStatic('loginModal');
+    }
+});
+
+// Signup Submit Handler -> Redirects to Home page
+document.getElementById("signupForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = document.getElementById("signupName").value;
+    const email = document.getElementById("signupEmail").value;
+    const password = document.getElementById("signupPassword").value;
+
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+            fullName: name,
+            email: email,
+            createdAt: new Date()
+        });
+        alert("Account Created Successfully!");
+        
+        const signupModal = bootstrap.Modal.getInstance(document.getElementById('signupModal'));
+        if(signupModal) signupModal.hide();
+        clearAuthFields();
+        
+        window.location.href = "{{ url_for('home') }}";
+    } catch(error) {
+        alert("Signup Error: " + error.message);
+        console.error(error);
+    }
+});
+
+// Login Submit Handler -> Redirects to Home page
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+        alert("Login Successful!");
+        
+        const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+        if(loginModal) loginModal.hide();
+        clearAuthFields();
+        
+        window.location.href = "{{ url_for('home') }}";
+    } catch(error) {
+        alert("Login Error: " + error.message);
+        console.error(error);
+    }
+});
 </script>
 
 <script>
-  // Password Hide and Show dynamically control karne ka function
   function togglePasswordVisibility(inputId, iconElement) {
     const passwordInput = document.getElementById(inputId);
     if (passwordInput.type === "password") {
@@ -201,10 +382,9 @@
     }
   }
 
-  // JavaScript Slides Carousel logic
   const slides = [
-    { img: "/static/images/slide2.png", text: '"Our application aims to enhance hair care practices through intelligent analysis and personalized recommendations."' },
-    { img: "/static/images/slide1.png", text: '"Taking care of your hair is not just about looking good; it\'s about nurturing yourself and embracing your natural beauty 🌸"' }
+    { img: "{{ url_for('static', filename='images/slide2.png') }}", text: '"Our application aims to enhance hair care practices through intelligent analysis and personalized recommendations."' },
+    { img: "{{ url_for('static', filename='images/slide1.png') }}", text: '"Taking care of your hair is not just about looking good; it\'s about nurturing yourself and embracing your natural beauty 🌸"' }
   ];
  
   let currentIndex = 0;
